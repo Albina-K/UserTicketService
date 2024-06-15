@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,10 @@ namespace UserTicketService.Tests
         [Test]
         public void MultiplicationMustReturnNotNullValue()//ДействиеДолженОжидаемое возвращаемое значение
         {
-            var calculator = new Calculator();
+            var mockMailSender = new Mock<IMailSender>();
+            mockMailSender.Setup(v => v.Send()).Returns(true);
+            
+            var calculator = new Calculator(mockMailSender.Object);
 
             Assert.AreEqual(8, calculator.Multiplication(2, 4));
         }
@@ -37,11 +41,34 @@ namespace UserTicketService.Tests
             Assert.Throws<DivideByZeroException>(() => calculator.Division(30, 0));
         }
 
+        //[Test]
+        //public void Subtraction_MustReturnCorrectValue2()
+        //{
+        //    Calculator calculator = new Calculator();
+        //    Assert.True(calculator.Subtraction(300, 10) == 290);
+        //}
+
         [Test]
-        public void Subtraction_MustReturnCorrectValue2()
+        public void AddAlwaysReturnsExpectedValue()
         {
-            Calculator calculator = new Calculator();
-            Assert.True(calculator.Subtraction(300, 10) == 290);
+            var calculatorTest = new Calculator4();
+            Assert.That(calculatorTest.Add(10, 220), Is.EqualTo(230));
+        }
+
+        [Test]
+        public void AdditionalMustReturnCorrectValue()
+        {
+            var calculator = new Calculator();
+            int result = calculator.Addition(50, 10, 34);
+            Assert.Equals(94, result);
+        }
+
+        [Test]
+        public void MultiplicationMustReturnCorrectValue()
+        {
+            var calculator = new Calculator();
+            int result = calculator.Multiplication(3, 2, 20);
+            Assert.Equals(120, result);
         }
     }
 }
